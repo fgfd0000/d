@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* لمسة إضافية للخلفية الخشبية */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #ffffff; /* أبيض كبداية */
+}
