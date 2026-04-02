@@ -1,26 +1,60 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AuthPage from './AuthPage';
+import SignUp from './SignUp';
 import CompanyDashboard from './CompanyDashboard';
 import DriverDashboard from './DriverDashboard';
 
 function App() {
-  // الحالة الافتراضية هي 'login' (صفحة الدخول)
+  const { i18n } = useTranslation();
   const [currentPage, setCurrentPage] = useState('login');
 
-  // هذه الوظيفة هي التي ستقوم بتغيير الصفحات
   const navigateTo = (pageName) => {
     setCurrentPage(pageName);
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'ar' ? 'en' : 'ar';
+    i18n.changeLanguage(newLang);
+    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = newLang;
+  };
+
   return (
     <div className="App">
-      {/* هنا يقرر النظام أي صفحة يعرض بناءً على قيمة currentPage */}
-      
-      {currentPage === 'login' && <AuthPage onLogin={navigateTo} />}
-      
-      {currentPage === 'company' && <CompanyDashboard onLogout={() => navigateTo('login')} />}
-      
-      {currentPage === 'driver' && <DriverDashboard onLogout={() => navigateTo('login')} />}
+      {currentPage === 'login' && (
+        <AuthPage
+          onLogin={navigateTo}
+          onGoToSignUp={() => navigateTo('signup')}
+          onToggleLanguage={toggleLanguage}
+          currentLang={i18n.language}
+        />
+      )}
+
+      {currentPage === 'signup' && (
+        <SignUp
+          onSignUpSuccess={navigateTo}
+          onBackToLogin={() => navigateTo('login')}
+          onToggleLanguage={toggleLanguage}
+          currentLang={i18n.language}
+        />
+      )}
+
+      {currentPage === 'company' && (
+        <CompanyDashboard
+          onLogout={() => navigateTo('login')}
+          onToggleLanguage={toggleLanguage}
+          currentLang={i18n.language}
+        />
+      )}
+
+      {currentPage === 'driver' && (
+        <DriverDashboard
+          onLogout={() => navigateTo('login')}
+          onToggleLanguage={toggleLanguage}
+          currentLang={i18n.language}
+        />
+      )}
     </div>
   );
 }

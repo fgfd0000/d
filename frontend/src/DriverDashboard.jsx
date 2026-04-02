@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const DriverDashboard = ({ onLogout }) => {
+const DriverDashboard = ({ onLogout, onToggleLanguage, currentLang }) => {
+  const isArabic = currentLang === 'ar';
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // --- حالات الرحلة والمحفظة ---
@@ -19,7 +20,6 @@ const DriverDashboard = ({ onLogout }) => {
   // --- بيانات القيادة الحية ---
   const [distanceLeft, setDistanceLeft] = useState(0);
   const [currentSpeed, setCurrentSpeed] = useState(0);
-  const [podUploaded, setPodUploaded] = useState(false);
 
   // دالة حساب الوقت المتوقع (ETA) بناءً على 90 كم/س + ساعتين أمان
   const calculateETA = (dist) => {
@@ -56,7 +56,6 @@ const DriverDashboard = ({ onLogout }) => {
     setActiveLoad(load);
     setDistanceLeft(load.distance);
     setJourneyStatus('driving');
-    setPodUploaded(false);
     
     // إزالة الطلب من السوق حتى لا يقبله سائق آخر
     setAvailableLoads(availableLoads.filter(l => l.id !== load.id));
@@ -65,7 +64,6 @@ const DriverDashboard = ({ onLogout }) => {
   // معالجة الوصول ورفع الـ POD
   const handleFileUpload = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setPodUploaded(true);
       
       // محاكاة إرسال الملف وإنهاء الرحلة
       setTimeout(() => {
@@ -90,7 +88,7 @@ const DriverDashboard = ({ onLogout }) => {
     setActiveLoad(null);
   };
 
-  const styles = getThemeStyles(isDarkMode);
+  const styles = getThemeStyles(isDarkMode, isArabic);
 
   return (
     <div style={styles.pageStyle}>
@@ -98,11 +96,14 @@ const DriverDashboard = ({ onLogout }) => {
       <header style={styles.headerStyle}>
         <div style={styles.logoStyle}>LogiConnect 🚛</div>
         <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+          <button onClick={onToggleLanguage} style={{...styles.themeToggleBtn, padding: '5px 12px'}}>
+            {isArabic ? '🌐 EN' : '🌐 عربي'}
+          </button>
           <button onClick={() => setIsDarkMode(!isDarkMode)} style={styles.themeToggleBtn}>
             {isDarkMode ? '☀️' : '🌙'}
           </button>
-          <span>مرحباً، كابتن محمد</span>
-          <button onClick={onLogout} style={styles.logoutBtn}>خروج</button>
+          <span>{isArabic ? 'مرحباً، كابتن محمد' : 'Welcome, Captain Mohammed'}</span>
+          <button onClick={onLogout} style={styles.logoutBtn}>{isArabic ? 'خروج' : 'Logout'}</button>
         </div>
       </header>
 
@@ -194,7 +195,7 @@ const DriverDashboard = ({ onLogout }) => {
                   <>
                     <h3 style={{color: styles.textMain, textAlign: 'center'}}>جارٍ التوجه للوجهة... 🚚</h3>
                     <div style={{...styles.mapContainer, marginTop: '20px', height: '250px'}}>
-                        <iframe src="https://maps.google.com/maps?q=Jeddah,Al%20Khumra&t=&z=13&ie=UTF8&iwloc=&output=embed6" width="100%" height="100%" style={{border:0, borderRadius: '8px'}} allowFullScreen></iframe>
+                        <iframe title="route-map" src="https://maps.google.com/maps?q=Jeddah,Al%20Khumra&t=&z=13&ie=UTF8&iwloc=&output=embed6" width="100%" height="100%" style={{border:0, borderRadius: '8px'}} allowFullScreen></iframe>
                     </div>
                   </>
                 ) : (
@@ -260,7 +261,7 @@ const DriverDashboard = ({ onLogout }) => {
 };
 
 // --- التنسيقات (Aesthetic Wood Theme) ---
-const getThemeStyles = (isDark) => {
+const getThemeStyles = (isDark, isArabic = false) => {
   const colors = {
     bgPage: isDark ? '#121212' : '#f9f9f9',
     bgHeader: isDark ? '#1a110a' : '#3d2b1f',
@@ -273,7 +274,7 @@ const getThemeStyles = (isDark) => {
   };
 
   return {
-    pageStyle: { minHeight: '100vh', backgroundColor: colors.bgPage, direction: 'rtl', fontFamily: 'Arial', color: colors.textMain, transition: 'all 0.3s' },
+    pageStyle: { minHeight: '100vh', backgroundColor: colors.bgPage, direction: isArabic ? 'rtl' : 'ltr', fontFamily: 'Arial', color: colors.textMain, transition: 'all 0.3s' },
     headerStyle: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 30px', backgroundColor: colors.bgHeader, color: colors.accent, boxShadow: '0 2px 10px rgba(0,0,0,0.1)' },
     logoStyle: { fontSize: '22px', fontWeight: 'bold' },
     themeToggleBtn: { backgroundColor: 'transparent', border: `1px solid ${colors.accent}`, borderRadius: '5px', padding: '5px 10px', cursor: 'pointer' },
