@@ -133,7 +133,7 @@ export const handleApiError = (error) => {
   return error.message || 'حدث خطأ غير متوقع';
 };
 
-export default {
+const utils = {
   storageUtils,
   getAuthHeaders,
   formatError,
@@ -148,3 +148,5 @@ export default {
   validatePassword,
   handleApiError,
 };
+
+export default utils;

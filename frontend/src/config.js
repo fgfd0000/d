@@ -17,9 +17,11 @@ const config = {
 
 const currentConfig = config[ENV];
 
-export default {
+const appConfig = {
   API_URL: currentConfig.API_URL,
   API_TIMEOUT: currentConfig.API_TIMEOUT,
   DEBUG: currentConfig.DEBUG,
   ENV,
 };
+
+export default appConfig;

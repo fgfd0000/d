@@ -185,9 +185,11 @@ export const trackingApi = {
   },
 };
 
-export default {
+const apiExports = {
   authApi,
   companyApi,
   driverApi,
   trackingApi,
 };
+
+export default apiExports;

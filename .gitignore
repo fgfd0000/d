@@ -56,8 +56,10 @@ local netlify/vercel
 .netlify
 .vercel
 
-storybook
-/storybook-static
+build artifacts
+/build
+frontend/build/
+
 
 temporary files
 *.log
